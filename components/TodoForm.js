@@ -1,9 +1,12 @@
 import { Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
+import { TodoContext } from "../contexts/TodoContext";
 
 const TodoForm = () => {
+  const { showAlert } = useContext(TodoContext);
+
   const [todo, setTodo] = useState({
     title: "",
     description: "",
@@ -13,13 +16,14 @@ const TodoForm = () => {
     e.preventDefault();
 
     if (todo.title == "" || todo.description == "") {
+      showAlert("error", "Please fill all fields");
       return;
     }
     const ref = collection(db, "todos");
     const docRef = await addDoc(ref, { ...todo, createdAt: serverTimestamp() });
     console.log(docRef.id);
     setTodo({ title: "", description: "" });
-    alert(`${docRef.id} created!`);
+    showAlert("success", `${docRef.id} created!`);
   };
 
   return (
