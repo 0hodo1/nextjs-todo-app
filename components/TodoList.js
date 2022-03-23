@@ -7,6 +7,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useEffect, useState } from "react";
+import Todo from "./Todo";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
@@ -30,7 +31,7 @@ const TodoList = () => {
   return (
     <div>
       {todos.map((todo) => (
-        <div key={todo.id}>{todo.title}</div>
+        <Todo key={todo.id} todo={todo} />
       ))}
     </div>
   );
