@@ -6,11 +6,14 @@ import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { TodoContext } from "../contexts/TodoContext";
 import { useContext } from "react";
+import { useRouter } from "next/router";
 
 const Todo = ({ todo }) => {
   const { id, title, description, createdAt } = todo;
 
   const { showAlert, setTodo } = useContext(TodoContext);
+
+  const router = useRouter();
 
   const handleDelete = async (id, e) => {
     e.preventDefault();
@@ -20,6 +23,11 @@ const Todo = ({ todo }) => {
 
     showAlert("warning", `${id}'s deleted!`);
   };
+
+  const handleMore = (id, e) => {
+    router.push(`/todos/${id}`);
+  };
+
   return (
     <ListItem
       sx={{ mt: 3, boxShadow: 3 }}
@@ -30,7 +38,7 @@ const Todo = ({ todo }) => {
           <IconButton onClick={(e) => handleDelete(id, e)}>
             <Delete />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={(e) => handleMore(id, e)}>
             <MoreVert />
           </IconButton>
         </>
