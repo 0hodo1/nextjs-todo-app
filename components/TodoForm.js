@@ -1,16 +1,28 @@
 import { Button, TextField, Typography } from "@mui/material";
-import { useState, useContext } from "react";
+import { useContext, useRef, useEffect } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { TodoContext } from "../contexts/TodoContext";
 
 const TodoForm = () => {
-  const { showAlert } = useContext(TodoContext);
+  const { showAlert, todo, setTodo } = useContext(TodoContext);
 
-  const [todo, setTodo] = useState({
-    title: "",
-    description: "",
-  });
+  const inputRef = useRef();
+
+  useEffect(() => {
+    const clickControl = (e) => {
+      if (!inputRef.current.contains(e.target)) {
+        console.log("clicked inside");
+        setTodo({ title: "", description: "" });
+      } else {
+        console.log("clicked outside");
+      }
+    };
+    document.addEventListener("mousedown", clickControl);
+    return () => {
+      document.removeEventListener("mousedown", clickControl);
+    };
+  }, []);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -27,7 +39,8 @@ const TodoForm = () => {
   };
 
   return (
-    <div>
+    <div ref={inputRef}>
+      <pre>{JSON.stringify(todo, null, `\t`)}</pre>
       <Typography
         variant="h5"
         color="darkgrey"
