@@ -9,10 +9,11 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { TodoContext } from "../contexts/TodoContext";
+import { AuthContext } from "../contexts/AuthContext";
 
 const TodoForm = () => {
   const { showAlert, todo, setTodo } = useContext(TodoContext);
-
+  const { currentUser } = useContext(AuthContext);
   const inputRef = useRef();
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const TodoForm = () => {
       const ref = collection(db, "todos");
       const docRef = await addDoc(ref, {
         ...todo,
+        email: currentUser.email,
         createdAt: serverTimestamp(),
       });
       console.log(docRef.id);
