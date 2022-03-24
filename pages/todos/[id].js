@@ -1,6 +1,14 @@
-import { Grid } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+} from "@mui/material";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
+import Link from "next/link";
 
 const TodoDetail = ({ todoProps }) => {
   const todo = JSON.parse(todoProps);
@@ -13,8 +21,36 @@ const TodoDetail = ({ todoProps }) => {
       justifyContent="center"
       style={{ minHeight: "100vh" }}
     >
-      <Grid item xs={12}>
-        {todo.title}
+      <Grid item xs={4} md={4}>
+        <Card
+          sx={{
+            minWidth: 300,
+            maxWidth: 600,
+            boxShadow: 3,
+            backgroundColor: "#fafafa",
+          }}
+        >
+          <CardContent>
+            <Typography variant="h5" component="div">
+              {todo.title}
+            </Typography>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ mt: 2 }}
+              color="GrayText"
+            >
+              {todo.description}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Link href="/">
+              <Button variant="outlined" size="small" color="secondary">
+                Go back
+              </Button>
+            </Link>
+          </CardActions>
+        </Card>
       </Grid>
     </Grid>
   );
