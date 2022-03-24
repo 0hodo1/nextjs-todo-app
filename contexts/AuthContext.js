@@ -5,7 +5,7 @@ import Login from "../components/Login";
 
 export const AuthContext = createContext();
 
-export default function AuthContextProvider({ childeren }) {
+export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,7 @@ export default function AuthContextProvider({ childeren }) {
   } else {
     return (
       <AuthContext.Provider value={{ currentUser }}>
-        {childeren}
+        {children}
       </AuthContext.Provider>
     );
   }
