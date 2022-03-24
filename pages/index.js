@@ -4,6 +4,7 @@ import TodoForm from "../components/TodoForm";
 import TodoList from "../components/TodoList";
 import { TodoContext } from "../contexts/TodoContext";
 import { useState } from "react";
+import Loading from "../components/Loading";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -28,6 +29,7 @@ export default function Home() {
     setOpen(false);
   };
 
+  // return <Loading type="spin" color="grey" />;
   return (
     <TodoContext.Provider value={{ showAlert, todo, setTodo }}>
       <Container maxWidth="md">
