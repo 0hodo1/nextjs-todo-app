@@ -1,6 +1,12 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useContext, useRef, useEffect } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { TodoContext } from "../contexts/TodoContext";
 
@@ -31,16 +37,30 @@ const TodoForm = () => {
       showAlert("error", "Please fill all fields");
       return;
     }
-    const ref = collection(db, "todos");
-    const docRef = await addDoc(ref, { ...todo, createdAt: serverTimestamp() });
-    console.log(docRef.id);
-    setTodo({ title: "", description: "" });
-    showAlert("success", `${docRef.id} created!`);
+    if (todo?.hasOwnProperty("id")) {
+      const ref = doc(db, "todos", todo.id);
+      const newTodo = {
+        title: todo.title,
+        description: todo.description,
+        updatedAt: serverTimestamp(),
+      };
+      await updateDoc(ref, newTodo);
+      setTodo({ title: "", description: "" });
+      showAlert("success", "Todo updated");
+    } else {
+      const ref = collection(db, "todos");
+      const docRef = await addDoc(ref, {
+        ...todo,
+        createdAt: serverTimestamp(),
+      });
+      console.log(docRef.id);
+      setTodo({ title: "", description: "" });
+      showAlert("success", `${docRef.id} created!`);
+    }
   };
 
   return (
     <div ref={inputRef}>
-      <pre>{JSON.stringify(todo, null, `\t`)}</pre>
       <Typography
         variant="h5"
         color="darkgrey"
@@ -62,17 +82,28 @@ const TodoForm = () => {
         label="Description"
         margin="normal"
         multiline
-        maxRows
+        maxRows={4}
         onChange={(e) => setTodo({ ...todo, description: e.target.value })}
       ></TextField>
-      <Button
-        variant="outlined"
-        sx={{ mt: 3 }}
-        color="success"
-        onClick={handleClick}
-      >
-        Add Todo
-      </Button>
+      {todo?.hasOwnProperty("id") ? (
+        <Button
+          variant="outlined"
+          sx={{ mt: 3 }}
+          color="warning"
+          onClick={handleClick}
+        >
+          Update Todo
+        </Button>
+      ) : (
+        <Button
+          variant="outlined"
+          sx={{ mt: 3 }}
+          color="success"
+          onClick={handleClick}
+        >
+          Add Todo
+        </Button>
+      )}
     </div>
   );
 };
